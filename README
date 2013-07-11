@@ -1,2 +1,13 @@
 This repository is for code written to scrape data from various websites for Bright Bytes' Labs and to inform the Bright Bytes online Clarity platform.
 I am adding it to Github in order to keep it organized.
+
+relevant:
+pub_priv.rb -> currently iowa specific; prints out all of the following fields for all of the zip codes in iowa. to make this reusable, change the array to a different array of zip codes.
+	prints: NCES id, name, type, phone number, minimum grade, maximum grade, zip code
+
+obsolete:
+nces_ids.rb -> ARGV[0]: state code
+ARGV[1] -> number of pages
+gets all NCES ids for a state's public schools
+
+schools_from_ids.rb -> not currently reusable; initial array must be changed so that the NCES ids are the schools that you get demographic data for; probably going to have to rewrite this one totally to pull from a site that has public AND private
