@@ -2,8 +2,14 @@ This repository is for code written to scrape data from various websites for Bri
 I am adding it to Github in order to keep it organized.
 
 relevant:
+noko.rb -> uses nokogiri and error handling to parse demographic from NCES database; hopefully will result in fewer errors
+
+
 pub_priv.rb -> currently iowa specific; prints out all of the following fields for all of the zip codes in iowa. to make this reusable, change the array to a different array of zip codes.
 	prints: NCES id, name, type, phone number, minimum grade, maximum grade, zip code
+
+demog.rb -> parses, for a type and NCES ID, all of the demographic data in the NCES database
+
 
 obsolete:
 nces_ids.rb -> ARGV[0]: state code
