@@ -4,7 +4,7 @@ clar_col_names = ["ID", "SchoolID", "Name", "Private School", "Address", "Town",
 nces_col_names = ["ID", "Name", "Address", "Town", "State", "Zip", "Phone", "County", "Type", "Min_Grade", "Max_Grade"]
 
 clarity = pd.read_csv("/Users/esthenabarlow/Desktop/matching.csv", header=None, names=clar_col_names, skiprows=1)
-nces = pd.read_csv("iowa_school_list.csv", header=None, names=nces_col_names, skiprows=1)
+nces = pd.read_csv("/Users/esthenabarlow/Desktop/iowa_school_list.csv", header=None, names=nces_col_names, skiprows=1)
 
 #creating list indicies as long as the respective school lists
 num_clarity_schools = len(clarity)
