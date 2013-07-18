@@ -4,8 +4,8 @@ import copy
 
 col_names = ["ID", "Name", "Address", "Town", "State", "Zip", "Phone", "County", "Type", "Min_Grade", "Max_Grade"]
 
-orig_clarity = pd.read_csv("/Users/esthenabarlow/Desktop/school_test.csv", header=None, names=col_names, skiprows=1)
-orig_nces = pd.read_csv("/Users/esthenabarlow/Desktop/school_test_search.csv", header=None, names=col_names, skiprows=1)
+orig_clarity = pd.read_csv("/Users/esthenabarlow/Desktop/matching.csv", header=None, names=col_names, skiprows=1)
+orig_nces = pd.read_csv("/Users/esthenabarlow/Desktop/iowa_school_list.csv", header=None, names=col_names, skiprows=1)
 
 clarity = copy.deepcopy(orig_clarity); nces = copy.deepcopy(orig_nces)
 
@@ -22,6 +22,8 @@ for db in clarity, nces:
 	for attr in col_names:
 		db[attr] = db[attr].map(map_replace)
 
+
+
 #creating list indices as long as the respective school lists
 num_clarity_schools = len(clarity)
 num_nces_schools = len(nces)
@@ -35,51 +37,39 @@ nces_indices = list(xrange(num_nces_schools))
 #list = [0,1,2,3,4,5]
 #k = list.pop(0)
 #print list
+
+
+
 def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db, orig_search_db):
-	still_missing = 0
-	
-
-
-
-
-exit()
-def search_list(attributes, db_base, db_to_search, to_search, orig_base_db, orig_search_db):
 	still_missing = []
-	for search_index in to_search:
-		attr = attributes[0]
-		school_attr = db_base[attr][search_index]
-		match = False
-		for ptnl_match in db_to_search[attr]:	
-			if ptnl_match == school_attr:
-				match = True
-				search_attributes = [x for x in attributes if attributes.index(x)>0]
-				for extra_attr in search_attributes:
-					print db_base[extra_attr][search_index]
-					print ptnl_match
-					print list(db_to_search[attr]).index(ptnl_match)
-					
-					
-					
-					#match_index = db_to_search[attr].index(ptnl_match)
-#					if db_to_search[att][match_index] != db_base[att][search_index]:
-#						match = False
-#			if match == True:
-#				search_ind = db_to_search[attr].index(ptnl_match)
-#				print str(orig_search_db["ID"][search_ind]) + ", " + str(orig_search_db[attr][search_ind]) + ", " + str(orig_base_db["ID"][search_index]) + ", " + str(orig_base_db[attr][search_index])
-#		if match == False:
-#			still_missing.append(index)
+	for index in missing_indices:
+		first_search_term = list(db_base[attributes[0]])[index]
+		first_search_list = list(db_to_search[attributes[0]])
+		index_still_missing = True
+		for i in list(xrange(len(first_search_list))):
+			item = first_search_list[i]
+			if item == first_search_term:
+				if len(attributes)==1:
+					index_still_missing = False
+					print str(list(orig_base_db["ID"])[index]) + ", " + str(list(orig_base_db["Name"])[index]) + ", " + str(list(orig_search_db["ID"])[i]) + ", " + str(list(orig_search_db["Name"])[i])
+				else:
+					match_found = True
+					for other_attr in attributes:
+						if list(db_base[other_attr])[index] != list(db_to_search[other_attr])[i]:
+							match_found = False
+					if match_found == True:
+							index_still_missing = False
+							print str(list(orig_base_db["ID"])[index]) + ", " + str(list(orig_base_db["Name"])[index]) + ", " + str(list(orig_search_db["ID"])[i]) + ", " + str(list(orig_search_db["Name"])[i])
+		if index_still_missing:
+			still_missing.append(index)
+	return still_missing
 	
 	
-
-#number of records in clarity that are missing from NCES
-
-missing_names = search_list(["Name", "Type"], clarity, nces, clarity_indices, orig_clarity, orig_nces)
-
-#print "Phone Matches"
-#missing_phones = search_list(["Phone"], missing_names, clarity, nces, orig_clarity, orig_nces)
-#print "Address Matches"
-#missing_addresses = search_list(["Address"], missing_phones, clarity, nces, orig_clarity, orig_nces)
-#file = open('non_match', 'w')
-#for addr in missing_addresses:
-#	file.write(list(orig_clarity["Name"])[addr]+'\n')
-	#print list(orig_clarity["Name"])[addr] + " " + list(orig_clarity["Address"])[addr]
+missing_names = search_list(["Name", "Town"], clarity, nces, clarity_indices, orig_clarity, orig_nces)
+missing_addresses = search_list(["Address", "Min_Grade"], clarity, nces, missing_names, orig_clarity, orig_nces)
+missing_towns = search_list(["Address", "Town", "Type", "Min_Grade", "Max_Grade"], clarity, nces, missing_addresses, orig_clarity, orig_nces)
+missing_phones = search_list(["Phone", "Max_Grade", "Min_Grade"], clarity, nces, missing_towns, orig_clarity, orig_nces)
+missing = search_list(["Phone", "Min_Grade", "Max_Grade"], clarity, nces, missing_phones, orig_clarity, orig_nces)
+file = open('non_match', 'w')
+for ind in missing:
+	file.write(list(orig_clarity["Name"])[ind]+'\n')
