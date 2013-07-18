@@ -1,13 +1,28 @@
 import pandas as pd
 import csv
+import copy
 
-clar_col_names = ["ID", "SchoolID", "Name", "Type", "Address", "Town", "State", "Zip", "County", "Min_Grade", "Max_Grade", "Phone"] 
-nces_col_names = ["ID", "Name", "Address", "Town", "State", "Zip", "Phone", "County", "Type", "Min_Grade", "Max_Grade"]
+col_names = ["ID", "Name", "Address", "Town", "State", "Zip", "Phone", "County", "Type", "Min_Grade", "Max_Grade"]
 
-clarity = pd.read_csv("/Users/esthenabarlow/Desktop/matching.csv", header=None, names=clar_col_names, skiprows=1)
-nces = pd.read_csv("/Users/esthenabarlow/Desktop/iowa_school_list.csv", header=None, names=nces_col_names, skiprows=1)
+orig_clarity = pd.read_csv("/Users/esthenabarlow/Desktop/school_test.csv", header=None, names=col_names, skiprows=1)
+orig_nces = pd.read_csv("/Users/esthenabarlow/Desktop/school_test_search.csv", header=None, names=col_names, skiprows=1)
 
-#creating list indicies as long as the respective school lists
+clarity = copy.deepcopy(orig_clarity); nces = copy.deepcopy(orig_nces)
+
+def map_replace(entry):
+	problem_chars = ["'", "(", ")", ",", ".", "-", " ", "/", "JuniorHighSchool", "SeniorHighSchool", "SeniorHigh", "MiddleSchool", "HighSchool", "ElementarySchool", "Elementary", "Middle", "High"]
+	replacement_chars = ["", "", "", "", "", "", "", "", "MS", "HS", "HS", "MS", "HS", "EL", "EL", "MS", "HS"]
+	return_str = str(entry)
+	for i in list(xrange(len(problem_chars))):
+		return_str = return_str.replace(problem_chars[i], replacement_chars[i])
+	return_str = return_str.lower()
+	return return_str
+
+for db in clarity, nces:
+	for attr in col_names:
+		db[attr] = db[attr].map(map_replace)
+
+#creating list indices as long as the respective school lists
 num_clarity_schools = len(clarity)
 num_nces_schools = len(nces)
 clarity_indices =  list(xrange(num_clarity_schools))
@@ -17,35 +32,54 @@ nces_indices = list(xrange(num_nces_schools))
 # it returns a list of all of the indices that are in db_in but missing from db_search
 #it also outputs a new csv file that will have clarity ids in it
 
-def search_list(attributes, current_list, db_in, db_search):
-	missing_indices = []
-	for ind in current_list:
-		if ind < num_clarity_schools and ind< num_nces_schools:	
-			for attr in attributes:
-				in_attrs = [str(x).replace(' ', "") for x in list(db_in[attr])]
-				search_attrs = [str(y).replace(' ', "") for y in list(db_search[attr])]
-				in_attr = in_attrs[ind]
-				try:
-					search_ind = search_attrs.index(in_attr)
-					if attr == attributes[len(attributes)-1]:
-						continue
-#						print str(list(db_in["ID"])[ind]) + ", " + str(list(db_in["Name"])[ind]) + ", " + str(list(db_search["ID"])[search_ind]) + ", " + str(list(db_search["Name"])[search_ind])
-					else:
-						continue
-				except ValueError:
-					missing_indices.append(ind)
-					break
-	return missing_indices
+#list = [0,1,2,3,4,5]
+#k = list.pop(0)
+#print list
+def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db, orig_search_db):
+	still_missing = 0
+	
 
+
+
+
+exit()
+def search_list(attributes, db_base, db_to_search, to_search, orig_base_db, orig_search_db):
+	still_missing = []
+	for search_index in to_search:
+		attr = attributes[0]
+		school_attr = db_base[attr][search_index]
+		match = False
+		for ptnl_match in db_to_search[attr]:	
+			if ptnl_match == school_attr:
+				match = True
+				search_attributes = [x for x in attributes if attributes.index(x)>0]
+				for extra_attr in search_attributes:
+					print db_base[extra_attr][search_index]
+					print ptnl_match
+					print list(db_to_search[attr]).index(ptnl_match)
+					
+					
+					
+					#match_index = db_to_search[attr].index(ptnl_match)
+#					if db_to_search[att][match_index] != db_base[att][search_index]:
+#						match = False
+#			if match == True:
+#				search_ind = db_to_search[attr].index(ptnl_match)
+#				print str(orig_search_db["ID"][search_ind]) + ", " + str(orig_search_db[attr][search_ind]) + ", " + str(orig_base_db["ID"][search_index]) + ", " + str(orig_base_db[attr][search_index])
+#		if match == False:
+#			still_missing.append(index)
+	
+	
 
 #number of records in clarity that are missing from NCES
-print "Name Matches"
-missing_names = search_list(["Name"], clarity_indices, clarity, nces)
-print "Phone Matches"
-missing_phones = search_list(["Phone"], missing_names, clarity, nces)
-print "Address Matches"
-missing_addresses = search_list(["Zip", "Town", "Address"], missing_phones, clarity, nces)
-file = open('non_match', 'w')
-for addr in missing_addresses:
-	file.write(list(clarity["Name"])[addr])
-	print list(clarity["Name"])[addr] + " " + list(clarity["Address"])[addr]
+
+missing_names = search_list(["Name", "Type"], clarity, nces, clarity_indices, orig_clarity, orig_nces)
+
+#print "Phone Matches"
+#missing_phones = search_list(["Phone"], missing_names, clarity, nces, orig_clarity, orig_nces)
+#print "Address Matches"
+#missing_addresses = search_list(["Address"], missing_phones, clarity, nces, orig_clarity, orig_nces)
+#file = open('non_match', 'w')
+#for addr in missing_addresses:
+#	file.write(list(orig_clarity["Name"])[addr]+'\n')
+	#print list(orig_clarity["Name"])[addr] + " " + list(orig_clarity["Address"])[addr]
