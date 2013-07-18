@@ -10,8 +10,8 @@ orig_nces = pd.read_csv("/Users/esthenabarlow/Desktop/iowa_school_list.csv", hea
 clarity = copy.deepcopy(orig_clarity); nces = copy.deepcopy(orig_nces)
 
 def map_replace(entry):
-	problem_chars = ["'", "(", ")", ",", ".", "-", " ", "/", "JuniorHighSchool", "SeniorHighSchool", "SeniorHigh", "MiddleSchool", "HighSchool", "ElementarySchool", "Elementary", "Middle", "High"]
-	replacement_chars = ["", "", "", "", "", "", "", "", "MS", "HS", "HS", "MS", "HS", "EL", "EL", "MS", "HS"]
+	problem_chars = ["'", "(", ")", ",", ".", "-", " ", "/", "JuniorHighSchool", "SeniorHighSchool", "SeniorHigh", "MiddleSchool", "HighSchool", "ElementarySchool", "Elementary", "Middle", "High", "Avenue", "Street"]
+	replacement_chars = ["", "", "", "", "", "", "", "", "MS", "HS", "HS", "MS", "HS", "EL", "EL", "MS", "HS", "Ave", "St"]
 	return_str = str(entry)
 	for i in list(xrange(len(problem_chars))):
 		return_str = return_str.replace(problem_chars[i], replacement_chars[i])
@@ -32,11 +32,6 @@ nces_indices = list(xrange(num_nces_schools))
 
 #this method searches for instances of the given attribute at the indexes in current list
 # it returns a list of all of the indices that are in db_in but missing from db_search
-#it also outputs a new csv file that will have clarity ids in it
-
-#list = [0,1,2,3,4,5]
-#k = list.pop(0)
-#print list
 
 
 def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db, orig_search_db, file):
@@ -63,19 +58,21 @@ def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db
 			still_missing.append(index)
 	return still_missing
 	
-file = open ('master_matches.csv', 'w'	)
-missing_names = search_list(["Name", "Town"], clarity, nces, clarity_indices, orig_clarity, orig_nces, file)
-missing_towns = search_list(["Address", "Town", "Type", "Min_Grade", "Max_Grade"], clarity, nces, missing_names, orig_clarity, orig_nces, file)
+file = open ('master_matches.csv', 'w')
+missing_names = search_list(["Address", "Min_Grade", "Max_Grade"], clarity, nces, clarity_indices, orig_clarity, orig_nces, file)
+missing_towns = search_list(["Address", "Name"], clarity, nces, missing_names, orig_clarity, orig_nces, file)
 missing_phones = search_list(["Phone", "Max_Grade", "Min_Grade"], clarity, nces, missing_towns, orig_clarity, orig_nces, file)
-missing_phone_towns = search_list(["Phone", "Town"], clarity, nces, missing_towns, orig_clarity, orig_nces, file)
+missing_phone_towns = search_list(["Name", "Town"], clarity, nces, missing_towns, orig_clarity, orig_nces, file)
 file = open ('weak_matches.csv', 'w')
+file.write("Name Only\n")
+name_matches = search_list(["Name"], clarity, nces, missing_phone_towns, orig_clarity, orig_nces, file)
 file.write("Phone Only\n")
-phone_matches = search_list(["Phone"], clarity, nces, missing_phone_towns, orig_clarity, orig_nces, file)
+phone_matches = search_list(["Phone"], clarity, nces, name_matches, orig_clarity, orig_nces, file)
 file.write("Address Only\n")
 address_matches = search_list(["Address"], clarity, nces, phone_matches, orig_clarity, orig_nces, file)
-print len(missing_phone_towns)
+
 print len(address_matches)
 
-file = open('non_match', 'w')
+file = open('non_match.csv', 'w')
 for ind in address_matches:
 	file.write(list(orig_clarity["Name"])[ind]+'\n')
