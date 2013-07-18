@@ -39,8 +39,7 @@ nces_indices = list(xrange(num_nces_schools))
 #print list
 
 
-
-def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db, orig_search_db):
+def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db, orig_search_db, file):
 	still_missing = []
 	for index in missing_indices:
 		first_search_term = list(db_base[attributes[0]])[index]
@@ -50,26 +49,33 @@ def search_list(attributes, db_base, db_to_search, missing_indices, orig_base_db
 			item = first_search_list[i]
 			if item == first_search_term:
 				if len(attributes)==1:
+					file.write(str(list(orig_base_db["ID"])[index]) + ", " + str(list(orig_base_db["Name"])[index]) + ", " + str(list(orig_search_db["ID"])[i]) + ", " + str(list(orig_search_db["Name"])[i]) + '\n')
 					index_still_missing = False
-					print str(list(orig_base_db["ID"])[index]) + ", " + str(list(orig_base_db["Name"])[index]) + ", " + str(list(orig_search_db["ID"])[i]) + ", " + str(list(orig_search_db["Name"])[i])
 				else:
 					match_found = True
 					for other_attr in attributes:
 						if list(db_base[other_attr])[index] != list(db_to_search[other_attr])[i]:
 							match_found = False
 					if match_found == True:
-							index_still_missing = False
-							print str(list(orig_base_db["ID"])[index]) + ", " + str(list(orig_base_db["Name"])[index]) + ", " + str(list(orig_search_db["ID"])[i]) + ", " + str(list(orig_search_db["Name"])[i])
+						index_still_missing = False
+						file.write(str(list(orig_base_db["ID"])[index]) + ", " + str(list(orig_base_db["Name"])[index]) + ", " + str(list(orig_search_db["ID"])[i]) + ", " + str(list(orig_search_db["Name"])[i]) + '\n')
 		if index_still_missing:
 			still_missing.append(index)
 	return still_missing
 	
-	
-missing_names = search_list(["Name", "Town"], clarity, nces, clarity_indices, orig_clarity, orig_nces)
-missing_addresses = search_list(["Address", "Min_Grade"], clarity, nces, missing_names, orig_clarity, orig_nces)
-missing_towns = search_list(["Address", "Town", "Type", "Min_Grade", "Max_Grade"], clarity, nces, missing_addresses, orig_clarity, orig_nces)
-missing_phones = search_list(["Phone", "Max_Grade", "Min_Grade"], clarity, nces, missing_towns, orig_clarity, orig_nces)
-missing = search_list(["Phone", "Min_Grade", "Max_Grade"], clarity, nces, missing_phones, orig_clarity, orig_nces)
+file = open ('master_matches.csv', 'w'	)
+missing_names = search_list(["Name", "Town"], clarity, nces, clarity_indices, orig_clarity, orig_nces, file)
+missing_towns = search_list(["Address", "Town", "Type", "Min_Grade", "Max_Grade"], clarity, nces, missing_names, orig_clarity, orig_nces, file)
+missing_phones = search_list(["Phone", "Max_Grade", "Min_Grade"], clarity, nces, missing_towns, orig_clarity, orig_nces, file)
+missing_phone_towns = search_list(["Phone", "Town"], clarity, nces, missing_towns, orig_clarity, orig_nces, file)
+file = open ('weak_matches.csv', 'w')
+file.write("Phone Only\n")
+phone_matches = search_list(["Phone"], clarity, nces, missing_phone_towns, orig_clarity, orig_nces, file)
+file.write("Address Only\n")
+address_matches = search_list(["Address"], clarity, nces, phone_matches, orig_clarity, orig_nces, file)
+print len(missing_phone_towns)
+print len(address_matches)
+
 file = open('non_match', 'w')
-for ind in missing:
+for ind in address_matches:
 	file.write(list(orig_clarity["Name"])[ind]+'\n')
