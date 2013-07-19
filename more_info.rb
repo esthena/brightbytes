@@ -14,9 +14,9 @@ def insert_comma(text, find, len)
 end
 
 
-zip = 50000
-while zip<53000
-	state = "IA"
+zip = 77494
+while zip<80000
+	state = "TX"
 	uri = URI('http://nces.ed.gov/globallocator/index.asp?')
 	params = {:search => 1, :State => state, :zipcode => zip.to_s(), :School => 1, :PrivSchool =>1}
 	uri.query = URI.encode_www_form(params)
@@ -24,7 +24,12 @@ while zip<53000
 	res = Net::HTTP::get_response(uri)
 	res_html = Nokogiri::HTML(res.body)
 	new_uri = 'http://nces.ed.gov/globallocator/index.asp?'+ res_html.css('a')[0]['href']
-	html = Nokogiri::HTML(open(new_uri))
+	begin
+		html = Nokogiri::HTML(open(new_uri))
+	rescue Errno::ECONNRESET
+		puts zip
+		next	
+	end
 	names = html.xpath('//td[@class="InstDesc"]')
 	details = html.xpath('//td[@class="InstDetail"]')
 	for name in names
