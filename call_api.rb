@@ -5,7 +5,8 @@ require 'json'
 zip = 50000
 labels = ['Median Household Size', 'Median Household Income', 'Number of Occupied Housing Units', 'Number of Housing Units', 'Non-English Speaking Population', 'Foreign-Born', 'Number of People Below the Poverty Line', 'Total Population']
 puts labels.to_s()
-tables = ['B25010_001E', 'B19013_001E', 'B25002_002E', 'B25002_001E', 'B16001_005E', 'B16005C_007E', 'B06012_002E', 'B01001_001E']
+#tables = ['B25010_001E', 'B19013_001E', 'B25002_002E', 'B25002_001E', 'B16001_005E', 'B16005C_007E', 'B06012_002E', 'B01001_001E']
+tables = ['B07001_067E','B07001_003E'] 
 while zip < 53000
 	api_key = '0e909e40f2664f799a7f7865347804305a47b87c'
 	base = 'http://api.census.gov/data/2011/acs5?'
