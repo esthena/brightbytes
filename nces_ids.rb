@@ -3,7 +3,7 @@ require 'net/http'
 require 'uri'
 
 i=1
-while i<=ARGV[1]
+while i<=ARGV[1].to_i()
 	uri = URI('http://nces.ed.gov/ccd/schoolsearch/school_list.asp?')
 
 	params = {:Search => 1, :State => ARGV[0].to_s(), :SpecificSchlTypes => "all", :IncGrade => -1, :LoGrade => -1, :HiGrade =>-1, :SchoolPageNum =>i}

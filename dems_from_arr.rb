@@ -12,7 +12,7 @@ end
 fields = ["NCES School ID", "Locale", "Type", "Charter", "Total Teachers (FTE)", "Total Students", "Student/Teacher Ratio", "American Indian/Alaska Native", "Asian/Pacific Islander", "Hispanic", "Black, non-Hispanic", "White, non-Hispanic", "Two or More Races", "PK", "KG", "1st Grade", "2nd Grade", "3rd Grade", "4th Grade", "5th Grade", "6th Grade", "7th Grade", "8th Grade", "9th Grade", "10th Grade", "11th Grade", "12th Grade"]
 arr_of_arrs = CSV.read("/Users/esthenabarlow/Desktop/"+ file_name)
 ids = arr_of_arrs.map {|row| row[0]}
-types = arr_of_arrs.map {|row| row[9]}
+#types = arr_of_arrs.map {|row| row[9]}
 k=1
 while k<ids.length()
 	line = Hash.new
@@ -25,8 +25,8 @@ while k<ids.length()
 			m+=1
 		end
 	end
-	type = types[k].strip
-
+    #	type = types[k].strip
+    type = 'Public'
 begin
 	doc = Nokogiri::HTML(open('http://nces.ed.gov/globallocator/sch_info_popup.asp?Type='+type+"&ID=" +id, 'User-Agent'=> 'ruby'))
 rescue
