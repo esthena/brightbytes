@@ -3,7 +3,7 @@ require 'open-uri'
 require 'nokogiri'
 require 'roo'
 
-zipc = 53000
+
 def insert_comma(text, find, len)
 	index = text.index(find)
 	if index==nil
@@ -13,17 +13,17 @@ def insert_comma(text, find, len)
 		return true
 	end
 end
-
-while zipc < 55000
-	state = 'WI'
-	zip = zipc.to_s()
+indic=1000
+while indic < 99999
+	zip = indic.to_s()
 	leng = zip.length()
 	while leng<5
 		zip = '0'+ zip
 		leng = zip.length()
 	end
 	uri = URI('http://nces.ed.gov/globallocator/index.asp?')
-	params = {:search => 1, :State => state, :zipcode => zip.to_s(), :School => 1, :PrivSchool =>1}
+	#params = {:search => 1, :State => state, :zipcode => zip.to_s(), :School => 1, :PrivSchool =>1}
+	params = {:search => 1, :zipcode => zip.to_s(), :School => 1, :PrivSchool =>1}
 	uri.query = URI.encode_www_form(params)
 
 	res = Net::HTTP::get_response(uri)
@@ -46,7 +46,7 @@ while zipc < 55000
 			name_txt = name.text
 			name_txt.insert(name_end-name_strt-4, ", ")
 			if insert_comma(name_txt, zip.to_s(), 5)
-				if insert_comma(name_txt, " "+state+" ", 3)
+				if insert_comma(name_txt, " ", 3)
 					if insert_comma(name_txt, '(', 14)
 						links = name.xpath('a[@href]')
 						url = links[0]["href"]
@@ -75,5 +75,5 @@ while zipc < 55000
 			end
 		end
 	end
-	zipc += 1
+	indic += 1
 end

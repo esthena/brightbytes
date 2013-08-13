@@ -1,3 +1,4 @@
+
 require 'csv'
 
 
@@ -18,24 +19,26 @@ end
 
 
 responses = Hash.new
-print "School ID, School Name,"
+print "State,School, ID,"
 questions.each_key do |q_to_print|
 	print q_to_print + "Weighted , Total, Percentage, " 
 end
 puts ""
 
 
-#files = ['/Users/esthenabarlow/Desktop/Clarity_Responses/elem.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/ms.csv', 
-#	'/Users/esthenabarlow/Desktop/Clarity_Responses/parents.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/teachers.csv',
-#		 '/Users/esthenabarlow/Desktop/Clarity_Responses/hs.csv']
-files = ['/Users/esthenabarlow/Desktop/Clarity_Responses/elem.csv']
+files = ['/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_elem.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_ms.csv', 
+	'/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_parents.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_teachers.csv',
+		 '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_hs.csv']
+
+#files = ['/Users/esthenabarlow/Desktop/sou_leh.csv']
 
 for file in files
 	sch_file = File.open(file, 'rb')
 	CSV.parse(sch_file) do |line|
 		schoolid = line[3]
 		name = line[1]
-		id = [schoolid, name]
+		state = line[0]
+		id = [state, schoolid, name]
 		specific_question = [line[4], line[7]]	
 		resp_count = line[8]
 		if responses.has_key?(id)
@@ -52,7 +55,7 @@ for file in files
 end
 
 responses.each_pair do |school, response_hash|
-	print school[0] + ", " + school[1] + ", "
+	print school[0] + ", " + school[1] + ", " + school[2] + ","
 	questions.each_key do |q|
 		num_options = questions[q]
 		i = 1
@@ -70,6 +73,9 @@ responses.each_pair do |school, response_hash|
 			i += 1
 		end
 		flt = weighted_average/total
+		if total ==0
+			flt = 0
+		end
 		print weighted_average.to_s() + ", " + total.to_s() + ", " + flt.to_s() + ", "
 	end
 	puts ""

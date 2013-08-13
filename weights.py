@@ -14,7 +14,7 @@ for f in files:
 	sorted = df.sort(['Name', 'Parent_Question', 'Concat', 'Position'],ascending = [1, 1,1,1])
 	no_duplicates = sorted.drop_duplicates(cols =['Parent_Question', 'Concat'], take_last=True)
 	weight_cols = ["Parent_Question", "Concat", "Name1", "Name2", "Position", "Weight"]
-	first_weights = pd.read_csv('/Users/esthenabarlow/Desktop/Clarity_Responses/radio_questions.csv', header=None, skiprows = 1, names = weight_cols)
+	first_weights = pd.read_csv('/Users/esthenabarlow/Desktop/Clarity_Responses/radio_questions_split.csv', header=None, skiprows = 1, names = weight_cols)
 	weights_frame = first_weights.drop_duplicates(cols = ['Parent_Question', 'Concat', 'Position'], take_last=True)
 	
 	num_options = []
@@ -22,6 +22,7 @@ for f in files:
 	sys.stdout.write('School Name,')
 	for ind in range(0,len(no_duplicates['State'])):
 		parent_q = list(no_duplicates['Parent_Question'])[ind]
+		print parent_q
 		if math.isnan(parent_q):
 			parent_q = -1
 		concat_id = list(no_duplicates['Concat'])[ind]
