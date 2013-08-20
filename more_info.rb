@@ -13,8 +13,11 @@ def insert_comma(text, find, len)
 		return true
 	end
 end
-indic=1000
-while indic < 99999
+#indic=1000
+#indic = 10314
+#indic = 16202
+indic = 21704
+while indic < 30000
 	zip = indic.to_s()
 	leng = zip.length()
 	while leng<5
@@ -28,6 +31,10 @@ while indic < 99999
 
 	res = Net::HTTP::get_response(uri)
 	res_html = Nokogiri::HTML(res.body)
+	if res_html.text.index("No results were found from your search.") != nil
+		indic += 1
+		next
+	end
 	new_uri = 'http://nces.ed.gov/globallocator/index.asp?'+ res_html.css('a')[0]['href']
 	begin
 		html = Nokogiri::HTML(open(new_uri))
@@ -46,7 +53,7 @@ while indic < 99999
 			name_txt = name.text
 			name_txt.insert(name_end-name_strt-4, ", ")
 			if insert_comma(name_txt, zip.to_s(), 5)
-				if insert_comma(name_txt, " ", 3)
+
 					if insert_comma(name_txt, '(', 14)
 						links = name.xpath('a[@href]')
 						url = links[0]["href"]
@@ -69,9 +76,19 @@ while indic < 99999
 						if url.include?("Public")
 							print "Public, "
 						end
-						puts grades[i].text + ", " + grades[k].text
+						if grades[i] == nil
+							print "n/a, "
+						else
+							print grades[i].text + ","
+						end
+						if grades[k] == nil
+							print "n/a,"
+						else
+							print grades[k].text + ","
+						end
+						puts ""
 					end
-				end
+
 			end
 		end
 	end

@@ -2,7 +2,7 @@ require 'csv'
 
 questions = Hash.new
 weights = Hash.new
-w_file = File.open('/Users/esthenabarlow/Desktop/Clarity_Responses/radio_questions.csv', 'rb')
+w_file = File.open('/Users/esthenabarlow/Desktop/ROUND_ONE1.csv', 'rb')
 CSV.parse(w_file) do |row|
 	q = row[0]
 	if !questions.has_key?(q)
@@ -16,18 +16,19 @@ end
 
 
 responses = Hash.new
-print "State,School, ID,"
+print "State,School"
 questions.each_key do |q_to_print|
 	print q_to_print + "Weighted , Total, Percentage, " 
 end
 puts ""
 
 
-files = ['/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_elem.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_ms.csv', 
-	'/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_parents.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_teachers.csv',
-		 '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_hs.csv']
+#files = ['/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_elem.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_ms.csv', 
+#	'/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_parents.csv', '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_teachers.csv',
+#		 '/Users/esthenabarlow/Desktop/Clarity_Responses/enabled_hs.csv']
 
 #files = ['/Users/esthenabarlow/Desktop/sou_leh.csv']
+files = ['/Users/esthenabarlow/Desktop/responses.csv']
 
 for file in files
 	sch_file = File.open(file, 'rb')
@@ -52,7 +53,7 @@ for file in files
 end
 
 responses.each_pair do |school, response_hash|
-	print school[0] + ", " + school[1] + ", " + school[2] + ","
+	print school[0] + ", " + school[2] + ","
 	questions.each_key do |q|
 		num_options = questions[q]
 		i = 1
@@ -69,9 +70,10 @@ responses.each_pair do |school, response_hash|
 			total += response_count.to_f()
 			i += 1
 		end
-		flt = weighted_average/total
 		if total ==0
 			flt = 0
+		else		
+			flt = weighted_average/total
 		end
 		print weighted_average.to_s() + ", " + total.to_s() + ", " + flt.to_s() + ", "
 	end

@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 
 #files = ['parents', 'teachers', 'elem', 'ms', 'hs']
-files = ['Clarity_Responses/teachers']
+files = ['Clarity_Responses/pa_teachers']
 cols = ["State", "Name", "Zip", "School ID", "Parent_Question", "Concat", "Question", "Response", "Position",
 			"Count"]
 for f in files:

@@ -1,0 +1,5 @@
+['Enrollment', 'FTE_Teachers', 'Student_Teacher_Ratio', 'Geography', 'School', 'Charter_Flag', 'Magnet_Flag',
+	'Title_1_Flag', 'Minimum_Grade', 'Maximum_Grade', 'Schools_in_District', 'English_Lanuage_Learners', 
+	'Special_Education', 'Median_Household_Income', 'Free_Reduced_Lunch', 'Years_of_Ed_Post_Grade_8', 
+	'Household_Size', 'Home_Ownership', 'Per_Pupil_Expenditure', 'Per_Pupil_Tech_Expenditure', 'Proficient_Math',
+	 'Proficient_Reading', 'Proficient_Science', 'Graduates', 
