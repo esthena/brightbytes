@@ -31,6 +31,10 @@ for zip in zips
 		end
 		geog = 'zip+code+tabulation+area:'+zip.to_s()
 		url = base + "key=" + api_key + "&get" + get + "&for=" + geog
+		puts url
+		if g == 'F'
+			exit()
+		end
 		resp = Net::HTTP.get_response(URI.parse(url))
 		if resp.body!=nil
 			res_array = JSON.parse(resp.body)[1]
