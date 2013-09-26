@@ -3,44 +3,121 @@ import scipy
 from scipy import cluster
 import csv
 
-ls = []
-math = []
-with open('/Users/esthenabarlow/Desktop/wfrma.csv', 'rU') as file:
-	rdr = csv.reader(file, delimiter = ',')
-	for row in rdr:
-		if len(row[0]) ==0 or len(row[1]) == 0 or len(row[2]) == 0:
-			continue
-		else:
-			r0 = float(row[0])
-			r1 = float(row[1])
-			r2 = float(row[2])
-			#ls.append((r0,r1,r2))	
-			ls.append((r0,r1))
-			math.append((r2))
+k_const = 12
+while k_const < 13:
+	print "\n"
+	print k_const
+	ids = []
+	ls = []
+	math = []
+	locs = []
+	vars = []
+#	with open('/Users/esthenabarlow/Desktop/clusters/nation/tiers/sensitivity_analysis/40000_sensitivity.csv', 'rU') as file:
+#	with open('/Users/esthenabarlow/Desktop/clusters/40000_percentile.csv', 'rU') as file:
+#	with open('/Users/esthenabarlow/Desktop/clusters/nation/tiers/sensitivity_analysis/graduation/g40000_sensitivity.csv', 'rU') as file:
+	with open('/Users/esthenabarlow/Desktop/clusters/high_schools/grad_input.csv', 'rU') as file:
+		rdr = csv.reader(file, delimiter = ',')
+		next(rdr, None)
+
+		for row in rdr:
+			if len(row[0]) ==0 or len(row[1]) == 0 or len(row[2]) == 0:
+				continue
+			else:
+				skip = False
+			#	for i in [0,1,2,3,4,5,6,7,8,9,10,11,12,14,17]:
+				for i in [0,4,17]:
+					if row[i] is None or len(row[i]) ==0:
+						skip = True
+				if skip:
+					continue
+				id = str(row[0])
+				mt = float(row[17])
+			#	locale = row[11]
+			#	ppupilsp = float(row[10])
+			#	ell_pct = float(row[2])
+			#	spec_ed_pct = float(row[3])
+			#	mhi = float(row[12])
+			#	white_pct = float(row[8])
+				frlun_pct = float(row[4])
+			#	yrs_ed = float(row[9])
+			#	hisp_pct = float(row[6])
+			#	blk_pct = float(row[7])
+			#	asn_pct = float(row[5])
+				row_vals = (frlun_pct, mt)
+				vars.append(row_vals)
+				#row_vals = (ell_pct, spec_ed_pct, frlun_pct, mhi, white_pct,  yrs_ed, hisp_pct, blk_pct, asn_pct)
+				#if locale is '2' or locale is '3':
+				#if locale == 'Rural' or locale == 'Suburb' or locale == 'City' or locale == 'Town':
+				#if locale == '1' or locale == '2' or locale == '3' or locale == '4':
+				if True:
+					ids.append(id)
+					math.append(mt)
+			#		locs.append(locale)
+					ls.append(row_vals)
+
+#	f = open('/Users/esthenabarlow/Desktop/clusters/nation/tiers/sensitivity_analysis/reading/lunch11.csv', 'wb')
+	f = open('/Users/esthenabarlow/Desktop/clusters/high_schools/lunch.csv', 'wb')
 	
-test = np.array(ls)
-result = scipy.cluster.vq.kmeans2(test, 9)
+	test = np.array(ls)
+	result = scipy.cluster.vq.kmeans2(test, k_const, iter = 20)
 
-centroids = result[0]
-labels = result[1]
+	centroids = result[0]
+	labels = result[1]
 
-for c in centroids:
-	print c
-
-i = 0
-math_ach = {}
-while i<len(labels):
-	index = labels[i]
-	if str(index) in math_ach:
-		new = math_ach[str(index)]
-		new.append(str(math[i]))
-		math_ach[str(index)] = new
-	else:
-		math_ach[str(index)] = [str(math[i])]
-	i+=1
-
-print math_ach['0']
-k = 0
-while k<9:
-	print len(math_ach[str(k)])
-	k+=1
+	i = 0
+	math_ach = {}
+	while i<len(labels):
+		index = labels[i]
+		if str(index) in math_ach:
+			new = math_ach[str(index)]
+			new.append(math[i])
+			math_ach[str(index)] = new
+		else:
+			math_ach[str(index)] = [math[i]]
+		i+=1
+	
+	k = 0
+	mx_std_dev = 0
+	mn_std_dev = 100
+	mx_avg = 0
+	mn_avg = 100
+	mn_cluster = 40000
+	
+	
+	for c in centroids:
+		f.write(str(c))
+	f.write("\n")
+	f.write("\n")
+	
+	j=0
+	f.write("id, cluster,ppupilsp, ell_pct, spec_ed_pct, mhi, frlun_pct, yrs_ed\n")
+	while j<len(labels):
+		f.write(str(ids[j]) + ", " + str(labels[j]) + "," + str(vars[j]) + "\n")
+		j+=1
+	f.write("\n")
+	
+	while k < k_const:
+		if str(k) in math_ach:
+			cluster_size = len(math_ach[str(k)])
+			mean = np.mean(math_ach[str(k)])
+			std_dev = np.std(math_ach[str(k)])
+			f.write(str(k) + ", " + str(cluster_size) + ", " + str(mean) + ", " + str(std_dev) + "\n")
+			if mean<mn_avg:
+				mn_avg = mean
+			if mean>mx_avg:
+				mx_avg = mean
+			if std_dev < mn_std_dev:
+				mn_std_dev = std_dev
+			if std_dev > mx_std_dev:
+				mx_std_dev = std_dev
+			if cluster_size < mn_cluster:
+				mn_cluster = cluster_size
+		k+=1
+	
+	
+	print "mean min: " + str(mn_avg)
+	print "mean max: " + str(mx_avg)
+	print "min stdev: " + str(mn_std_dev)
+	print "max stdev: " + str(mx_std_dev)
+	print "min cluster size: " + str(mn_cluster)
+	k_const +=1
