@@ -12,10 +12,7 @@ while k_const < 13:
 	math = []
 	locs = []
 	vars = []
-#	with open('/Users/esthenabarlow/Desktop/clusters/nation/tiers/sensitivity_analysis/40000_sensitivity.csv', 'rU') as file:
-#	with open('/Users/esthenabarlow/Desktop/clusters/40000_percentile.csv', 'rU') as file:
-#	with open('/Users/esthenabarlow/Desktop/clusters/nation/tiers/sensitivity_analysis/graduation/g40000_sensitivity.csv', 'rU') as file:
-	with open('/Users/esthenabarlow/Desktop/clusters/high_schools/grad_input.csv', 'rU') as file:
+	with open ('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/elem_input.csv', 'rU') as file:
 		rdr = csv.reader(file, delimiter = ',')
 		next(rdr, None)
 
@@ -24,39 +21,22 @@ while k_const < 13:
 				continue
 			else:
 				skip = False
-			#	for i in [0,1,2,3,4,5,6,7,8,9,10,11,12,14,17]:
-				for i in [0,4,17]:
+				for i in [0,15,17]:
 					if row[i] is None or len(row[i]) ==0:
 						skip = True
 				if skip:
 					continue
 				id = str(row[0])
-				mt = float(row[17])
-			#	locale = row[11]
-			#	ppupilsp = float(row[10])
-			#	ell_pct = float(row[2])
-			#	spec_ed_pct = float(row[3])
-			#	mhi = float(row[12])
-			#	white_pct = float(row[8])
-				frlun_pct = float(row[4])
-			#	yrs_ed = float(row[9])
-			#	hisp_pct = float(row[6])
-			#	blk_pct = float(row[7])
-			#	asn_pct = float(row[5])
+				mt = float(row[15])
+				frlun_pct = float(row[17])
 				row_vals = (frlun_pct, mt)
 				vars.append(row_vals)
-				#row_vals = (ell_pct, spec_ed_pct, frlun_pct, mhi, white_pct,  yrs_ed, hisp_pct, blk_pct, asn_pct)
-				#if locale is '2' or locale is '3':
-				#if locale == 'Rural' or locale == 'Suburb' or locale == 'City' or locale == 'Town':
-				#if locale == '1' or locale == '2' or locale == '3' or locale == '4':
 				if True:
 					ids.append(id)
 					math.append(mt)
-			#		locs.append(locale)
 					ls.append(row_vals)
 
-#	f = open('/Users/esthenabarlow/Desktop/clusters/nation/tiers/sensitivity_analysis/reading/lunch11.csv', 'wb')
-	f = open('/Users/esthenabarlow/Desktop/clusters/high_schools/lunch.csv', 'wb')
+	f = open('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/size12.csv', 'wb')
 	
 	test = np.array(ls)
 	result = scipy.cluster.vq.kmeans2(test, k_const, iter = 20)
