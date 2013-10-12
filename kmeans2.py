@@ -3,8 +3,8 @@ import scipy
 from scipy import cluster
 import csv
 
-k_const = 12
-while k_const < 13:
+k_const = 10
+while k_const < 11:
 	print "\n"
 	print k_const
 	ids = []
@@ -12,7 +12,8 @@ while k_const < 13:
 	math = []
 	locs = []
 	vars = []
-	with open ('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/elem_input.csv', 'rU') as file:
+	#mac air: with open ('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/elem_input.csv', 'rU') as file:
+	with open ('C:/Users/Esthena/Dropbox/EBDesktop/clusters_blanks/locale/suburb.csv', 'rU') as file:
 		rdr = csv.reader(file, delimiter = ',')
 		next(rdr, None)
 
@@ -21,14 +22,14 @@ while k_const < 13:
 				continue
 			else:
 				skip = False
-				for i in [0,15,17]:
+				for i in [0,6,9]:
 					if row[i] is None or len(row[i]) ==0:
 						skip = True
 				if skip:
 					continue
 				id = str(row[0])
-				mt = float(row[15])
-				frlun_pct = float(row[17])
+				mt = float(row[9])
+				frlun_pct = float(row[6])
 				row_vals = (frlun_pct, mt)
 				vars.append(row_vals)
 				if True:
@@ -36,8 +37,9 @@ while k_const < 13:
 					math.append(mt)
 					ls.append(row_vals)
 
-	f = open('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/size12.csv', 'wb')
-	
+	# mac air: f = open('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/size12.csv', 'wb')
+	f = open('C:/Users/Esthena/Dropbox/EBDesktop/clusters_blanks/locale/town/town11.csv.csv', 'wb')
+
 	test = np.array(ls)
 	result = scipy.cluster.vq.kmeans2(test, k_const, iter = 20)
 
