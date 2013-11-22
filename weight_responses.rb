@@ -21,8 +21,9 @@ def options_count arr
 end
 
 
-#response_file = CSV.read('/Users/Esthena/Dropbox/EBDesktop/coefficients/all_response_counts.csv')
-response_file = CSV.read('/Users/Esthena/Dropbox/EBDesktop/cedar_falls/cf_responses.csv')
+#response_file = CSV.read('/Users/Esthena/Desktop/all_scores.csv')
+#response_file = CSV.read('/Users/Esthena/Dropbox/EBDesktop/sandbox/all_scores_input.csv')
+response_file = CSV.read('/Users/Esthena/Desktop/pca_input.csv')
 current_school_id = ""
 response_file.each do |row|
 	if row[0].to_i() > 600

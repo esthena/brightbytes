@@ -1,10 +1,11 @@
 import numpy as np
-import scipy
+import scipy as sp
 from scipy import cluster
 import csv
 
-k_const = 10
-while k_const < 11:
+k_const = 8
+global_min_cluster = 0
+while global_min_cluster < 44:
 	print "\n"
 	print k_const
 	ids = []
@@ -13,35 +14,40 @@ while k_const < 11:
 	locs = []
 	vars = []
 	#mac air: with open ('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/elem_input.csv', 'rU') as file:
-	with open ('C:/Users/Esthena/Dropbox/EBDesktop/clusters_blanks/locale/suburb.csv', 'rU') as file:
+	with open ('/Users/Esthena/Desktop/kmeans_input.csv', 'rU') as file:
 		rdr = csv.reader(file, delimiter = ',')
 		next(rdr, None)
 
 		for row in rdr:
-			if len(row[0]) ==0 or len(row[1]) == 0 or len(row[2]) == 0:
+			if len(row[0]) ==0:
 				continue
 			else:
 				skip = False
-				for i in [0,6,9]:
+				for i in [0,1,2,3,4,5,6,7,8,9,10,11]:
 					if row[i] is None or len(row[i]) ==0:
 						skip = True
 				if skip:
 					continue
-				id = str(row[0])
-				mt = float(row[9])
-				frlun_pct = float(row[6])
-				row_vals = (frlun_pct, mt)
+				id = float(row[0])
+				nces_id = float(row[1])
+				student_count = float(row[7])
+				st_rat = float(row[8])
+				frlun_pct = float(row[9])
+				eth_pct = float(row[10])
+				pps = float(row[11])
+				row_vals = (student_count, st_rat, frlun_pct, eth_pct, pps)
 				vars.append(row_vals)
+				mt = 0
 				if True:
 					ids.append(id)
 					math.append(mt)
 					ls.append(row_vals)
 
 	# mac air: f = open('/Users/esthenabarlow/Dropbox/EBDesktop/clusters_blanks/elem/size12.csv', 'wb')
-	f = open('C:/Users/Esthena/Dropbox/EBDesktop/clusters_blanks/locale/town/town11.csv.csv', 'wb')
+	f = open('/Users/Esthena/Desktop/kmeans_output.csv', 'wb')
 
 	test = np.array(ls)
-	result = scipy.cluster.vq.kmeans2(test, k_const, iter = 20)
+	result = sp.cluster.vq.kmeans2(test, k_const, iter = 10)
 
 	centroids = result[0]
 	labels = result[1]
@@ -72,7 +78,7 @@ while k_const < 11:
 	f.write("\n")
 	
 	j=0
-	f.write("id, cluster,ppupilsp, ell_pct, spec_ed_pct, mhi, frlun_pct, yrs_ed\n")
+	f.write("id, cluster,student_count, st_rat, frlun_pct, eth_pct, pps\n")
 	while j<len(labels):
 		f.write(str(ids[j]) + ", " + str(labels[j]) + "," + str(vars[j]) + "\n")
 		j+=1
@@ -96,10 +102,10 @@ while k_const < 11:
 				mn_cluster = cluster_size
 		k+=1
 	
-	
+	global_min_cluster = mn_cluster
 	print "mean min: " + str(mn_avg)
 	print "mean max: " + str(mx_avg)
 	print "min stdev: " + str(mn_std_dev)
 	print "max stdev: " + str(mx_std_dev)
 	print "min cluster size: " + str(mn_cluster)
-	k_const +=1
+#	k_const +=1

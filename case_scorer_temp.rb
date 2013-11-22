@@ -1,8 +1,6 @@
 require 'csv'
 
 
-
-
   def case_subscore_generator id, q_id
     return @response_hash[id.to_s()][q_id.to_s()].to_f()
   end
@@ -732,7 +730,7 @@ end
 @hs_student_response_counts = Hash.new
 @ms_student_response_counts = Hash.new
 @elem_student_response_counts = Hash.new
-response_file = CSV.read('/Users/Esthena/Dropbox/EBDesktop/cedar_falls/cf_responses.csv')
+response_file = CSV.read('/Users/Esthena/Desktop/stmarys.csv')
 current_school_id = ""
 response_file.each do |row|
   if row[0].to_i() > 600

@@ -4,7 +4,7 @@ from scipy import cluster
 import csv
 
 ls = []
-with open('/Users/esthenabarlow/Desktop/wfrma.csv', 'rU') as file:
+with open('/Users/Esthena/Desktop/kmaeans_input.csv', 'rU') as file:
 	rdr = csv.reader(file, delimiter = ',')
 	next(rdr,None)
 	for row in rdr:
